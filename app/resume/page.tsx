@@ -1,0 +1,2 @@
+import Link from 'next/link';
+export default function ResumePage(){return <main className="simple-page"><Link href="/">← Home</Link><div><p className="eyebrow">Résumé</p><h1>Akhilesh Kumar Tyagi</h1><p>The résumé file has not been supplied yet. This route is ready to point to an admin-managed PDF without changing the portfolio UI.</p><a href="https://www.linkedin.com/in/akhilesh-kumar-tyagi-34286012a/" target="_blank" rel="noreferrer">View LinkedIn ↗</a></div></main>}
