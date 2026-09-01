@@ -14,7 +14,7 @@
 
 <br />
 
-![Akhilesh Kumar Tyagi — Shopify developer portfolio](./public/og.png)
+![Shopify storefront engineering with React, Next.js, TypeScript, GraphQL, Node.js and Figma](./public/github-shopify-techstack-hero-v1.png)
 
 ## Storefronts with a point of view
 
