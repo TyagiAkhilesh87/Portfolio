@@ -7,7 +7,7 @@
 
   I build distinctive Shopify storefronts where conversion-focused commerce architecture meets thoughtful UI/UX and dependable frontend engineering.
 
-  [![Portfolio](https://img.shields.io/badge/PORTFOLIO-IN_DEVELOPMENT-98ed1b?style=for-the-badge&labelColor=11110f)](#run-locally)
+  [![Live Portfolio](https://img.shields.io/badge/LIVE_PORTFOLIO-VISIT_SITE-98ed1b?style=for-the-badge&logo=vercel&logoColor=11110f&labelColor=11110f)](https://akhileshportfolio-one.vercel.app/)
   [![LinkedIn](https://img.shields.io/badge/LINKEDIN-CONNECT-ffffff?style=for-the-badge&logo=linkedin&logoColor=11110f&labelColor=11110f)](https://www.linkedin.com/in/akhilesh-kumar-tyagi-34286012a/)
   [![Email](https://img.shields.io/badge/EMAIL-LET'S_TALK-98ed1b?style=for-the-badge&logo=gmail&logoColor=11110f)](mailto:tyagiakhliesh87@gmail.com)
 </div>
@@ -140,6 +140,8 @@ npm run start
 ```
 
 ## Deploy to Vercel
+
+**Production:** [akhileshportfolio-one.vercel.app](https://akhileshportfolio-one.vercel.app/)
 
 1. Import this GitHub repository into Vercel.
 2. Keep the framework configuration detected from the project.
