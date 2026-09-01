@@ -154,6 +154,35 @@ html:has(.nx-site),body:has(.nx-site){overflow-x:clip}
 .nx-about-copy{position:relative;z-index:2}
 .nx-about-copy>p:not(.nx-eyebrow){margin-top:34px}
 
+/* Store previews remain reliable when external storefronts block iframe embedding. */
+.nx-availability{font-size:10px;line-height:1.35;padding:13px 18px}
+.nx-preview-tabs span,.nx-preview-tabs a{height:28px;padding:0 10px;border:0;border-radius:999px;display:flex;align-items:center;gap:6px;color:#a9aba4;font-size:8px;white-space:nowrap}
+.nx-preview-tabs span.active{background:#98ed1b;color:#11110f}
+.nx-preview-tabs a:hover{color:#fff}
+.nx-live-caption{position:relative;isolation:isolate;min-height:180px;padding:30px 32px;overflow:hidden;background:#20221e}
+.nx-live-caption:before{content:"";position:absolute;z-index:-1;inset:-35% -4% -35% 45%;background:url('/portrait-assets/work-commerce-constellation-v1.png') right center/cover no-repeat;opacity:.22;mix-blend-mode:screen;pointer-events:none}
+.nx-live-caption span{font-size:9px;letter-spacing:.06em}
+.nx-live-caption h3{margin:10px 0 8px;font-size:clamp(36px,3vw,52px);line-height:.95;letter-spacing:-.045em}
+.nx-live-caption p{max-width:700px;font-size:14px;line-height:1.6}
+.nx-live-caption small{width:max-content;margin-top:14px;padding:8px 11px;border:1px solid rgba(152,237,27,.38);border-radius:999px;background:rgba(152,237,27,.08);font-size:10px;letter-spacing:.025em}
+.nx-live-caption>a{position:relative;z-index:2;padding:14px 18px;font-size:10px;transition:background .25s,color .25s,border-color .25s,transform .25s}
+.nx-live-caption>a:hover{transform:translateY(-2px);border-color:#98ed1b;background:#98ed1b;color:#11110f}
+.nx-frame-note{padding:0 32px 24px;background:#20221e;color:#b6b8b0;font-size:10px;line-height:1.55}
+.nx-scroll-showcase>.nx-live-layout{top:10px;height:calc(100vh - 20px)}
+.nx-scroll-showcase .nx-live-stage{height:calc(100vh - 24px);max-height:none;display:grid;grid-template-rows:auto minmax(280px,1fr) auto auto}
+.nx-scroll-showcase .nx-frame-wrap{height:auto;min-height:0}
+.nx-scroll-showcase .nx-frame-wrap>img{object-position:top center}
+
+.case-preview-tabs span,.case-preview-tabs a{height:32px;padding:0 12px;border-radius:999px;display:flex;align-items:center;gap:7px;color:#aeb0a8;font-size:9px;white-space:nowrap}
+.case-preview-tabs span.active{background:var(--lime);color:#11110f}
+.case-preview-tabs a:hover{color:#fff}
+.case-live-launch{position:absolute;z-index:3;left:50%;top:50%;transform:translate(-50%,-50%);padding:15px 20px;border:1px solid rgba(255,255,255,.7);border-radius:999px;display:flex;align-items:center;gap:10px;background:rgba(17,17,15,.86);color:#fff!important;font-size:11px;box-shadow:0 18px 50px rgba(0,0,0,.28);backdrop-filter:blur(14px);transition:transform .3s,background .25s,color .25s}
+.case-live-launch:hover{transform:translate(-50%,-50%) scale(1.04);background:var(--lime);color:#11110f!important}
+.case-preview-foot{position:relative;isolation:isolate;min-height:112px;padding:24px 28px;overflow:hidden}
+.case-preview-foot:before{content:"";position:absolute;z-index:-1;inset:-80% 0 -80% 48%;background:url('/portrait-assets/work-commerce-constellation-v1.png') right center/cover no-repeat;opacity:.22;mix-blend-mode:screen;pointer-events:none}
+.case-preview-foot p{max-width:720px;color:#c0c3ba;font-size:12px;line-height:1.55}
+.case-preview-foot strong{padding:9px 12px;border:1px solid rgba(152,237,27,.4);border-radius:999px;background:rgba(152,237,27,.08);font-size:10px}
+
 @media(max-width:1100px){
   .nx-scroll-showcase{height:auto;margin-top:55px}
   .nx-scroll-showcase>.nx-live-layout{position:relative;top:auto;height:auto}
@@ -162,7 +191,7 @@ html:has(.nx-site),body:has(.nx-site){overflow-x:clip}
   .nx-scroll-showcase .nx-project-list{max-height:none;overflow:visible}
   .nx-scroll-showcase .nx-project-list-head,.nx-scroll-showcase .nx-scroll-cue{grid-column:1/-1}
   .nx-scroll-showcase .nx-project-list button{min-height:110px;border-right:1px solid #363834}
-  .nx-scroll-showcase .nx-live-stage{max-height:none}
+  .nx-scroll-showcase .nx-live-stage{height:auto;max-height:none;display:block}
   .nx-scroll-showcase .nx-frame-wrap{height:520px}
 }
 
@@ -182,4 +211,12 @@ html:has(.nx-site),body:has(.nx-site){overflow-x:clip}
   .nx-work-art{width:150vw;height:560px;right:-44vw;opacity:.55}
   .nx-about-art{width:160vw;height:620px;right:-55vw;opacity:.52}
   .nx-focus article{margin:0;padding:24px 10px}
+  .nx-availability{font-size:9px;white-space:normal}
+  .nx-live-caption{min-height:230px;padding:26px 20px;align-items:flex-start}
+  .nx-live-caption:before{inset:0 -45% 0 20%;opacity:.17}
+  .nx-live-caption h3{font-size:38px}
+  .nx-live-caption p{font-size:13px}
+  .nx-frame-note{padding:0 20px 22px;font-size:9px}
+  .case-preview-tabs span,.case-preview-tabs a{flex:1;justify-content:center}
+  .case-preview-foot{padding:22px 18px}
 }
