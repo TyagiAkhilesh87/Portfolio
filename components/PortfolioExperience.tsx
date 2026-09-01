@@ -1,96 +1,168 @@
 'use client';
 
-import Link from 'next/link';
-import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
+import Image from 'next/image';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { AnimatePresence, motion, useInView, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from 'motion/react';
+import { ArrowDown, ArrowRight, ArrowUpRight, Code, EnvelopeSimple, GithubLogo, ImageSquare, LinkedinLogo, List, MonitorPlay, PhoneCall, ShoppingBag, WhatsappLogo, X } from '@phosphor-icons/react';
+import { SiFigma, SiGithub, SiGraphql, SiJavascript, SiMongodb, SiNextdotjs, SiNodedotjs, SiReact, SiShopify, SiTypescript } from 'react-icons/si';
 import { projects } from '@/content/projects';
 
-const process = [
-  ['01','Understand','The business, customer and product come first.'],
-  ['02','Design','Shape a clear path through the ecommerce experience.'],
-  ['03','Engineer','Build reusable components and maintainable Shopify architecture.'],
-  ['04','Optimize','Improve responsiveness, usability and technical quality.'],
-  ['05','Refine','Test the important details across devices and interactions.'],
+const socials = [
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/akhilesh-kumar-tyagi-34286012a/', Icon: LinkedinLogo },
+  { label: 'GitHub', href: 'https://github.com/tyagiakhilesh87', Icon: GithubLogo },
+  { label: 'Email', href: 'mailto:tyagiakhliesh87@gmail.com', Icon: EnvelopeSimple },
+  { label: 'WhatsApp', href: 'https://wa.me/918795943121', Icon: WhatsappLogo },
 ];
 
-const expertise = [
-  ['Shopify',['Liquid','Custom sections','Theme architecture','Metafields','Product templates','Collections','Ecommerce UX']],
-  ['Frontend',['HTML','CSS','JavaScript','React','Responsive UI','Component architecture','Accessibility']],
-  ['Engineering',['Git','REST APIs','API integrations','Performance','SEO','Debugging','Browser compatibility']],
+const techStack = [
+  { name: 'Shopify', role: 'Commerce architecture', Icon: SiShopify },
+  { name: 'React', role: 'Interactive interfaces', Icon: SiReact },
+  { name: 'Next.js', role: 'Production storefronts', Icon: SiNextdotjs },
+  { name: 'TypeScript', role: 'Reliable application code', Icon: SiTypescript },
+  { name: 'Node.js', role: 'Services and APIs', Icon: SiNodedotjs },
+  { name: 'GraphQL', role: 'Connected commerce data', Icon: SiGraphql },
+  { name: 'MongoDB', role: 'Flexible persistence', Icon: SiMongodb },
+  { name: 'JavaScript', role: 'Web foundations', Icon: SiJavascript },
+  { name: 'Figma', role: 'Interface systems', Icon: SiFigma },
+  { name: 'GitHub', role: 'Versioned delivery', Icon: SiGithub },
 ];
+
+const orbitLabel = 'AKHILESH KUMAR TYAGI · SHOPIFY · UI/UX ·';
 
 export default function PortfolioExperience() {
-  const [theme,setTheme] = useState<'light'|'dark'>('light');
-  const [menu,setMenu] = useState(false);
-  const [command,setCommand] = useState(false);
-  const [query,setQuery] = useState('');
-  const [filter,setFilter] = useState('All');
-  const [active,setActive] = useState(0);
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [menu, setMenu] = useState(false);
+  const [entered, setEntered] = useState(false);
+  const [selected, setSelected] = useState(projects[0]);
+  const [previewMode, setPreviewMode] = useState<'image' | 'live'>('image');
+  const workShowcaseRef = useRef<HTMLDivElement>(null);
+  const aboutRef = useRef<HTMLElement>(null);
+  const manualProjectRef = useRef(false);
+  const reduceMotion = useReducedMotion();
+  const mouseX = useMotionValue(0), mouseY = useMotionValue(0);
+  const smoothX = useSpring(mouseX, { stiffness: 140, damping: 24, mass: .3 });
+  const smoothY = useSpring(mouseY, { stiffness: 140, damping: 24, mass: .3 });
+  const heroX = useTransform(smoothX, [-1, 1], [-11, 11]);
+  const heroY = useTransform(smoothY, [-1, 1], [-8, 8]);
+  const { scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, { stiffness: 160, damping: 30 });
+  const aboutInView = useInView(aboutRef, { once: true, amount: .08 });
 
   useEffect(() => {
-    const saved = localStorage.getItem('portfolio-theme') as 'light'|'dark'|null;
-    const initial = saved ?? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    setTheme(initial); document.documentElement.dataset.theme = initial;
-  },[]);
-  useEffect(() => { document.documentElement.dataset.theme = theme; localStorage.setItem('portfolio-theme',theme); },[theme]);
-  useEffect(() => {
-    const onKey = (event:KeyboardEvent) => {
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); setCommand(true); }
-      if (event.key === 'Escape') { setCommand(false); setMenu(false); }
+    const timer = window.setTimeout(() => setEntered(true), reduceMotion ? 50 : 1900);
+    const move = (event: PointerEvent) => {
+      mouseX.set(event.clientX / innerWidth * 2 - 1); mouseY.set(event.clientY / innerHeight * 2 - 1);
+      document.documentElement.style.setProperty('--cursor-x', `${event.clientX}px`);
+      document.documentElement.style.setProperty('--cursor-y', `${event.clientY}px`);
     };
-    addEventListener('keydown',onKey); return () => removeEventListener('keydown',onKey);
-  },[]);
-  useEffect(() => { if(command) dialogRef.current?.showModal(); else dialogRef.current?.close(); },[command]);
+    addEventListener('pointermove', move, { passive: true });
+    return () => { clearTimeout(timer); removeEventListener('pointermove', move); };
+  }, [mouseX, mouseY, reduceMotion]);
 
-  const filters = useMemo(() => ['All',...Array.from(new Set(projects.flatMap((p) => p.industries)))],[]);
-  const visible = projects.filter((p) => (filter === 'All' || p.industries.includes(filter)) && `${p.title} ${p.category} ${p.tags.join(' ')} ${p.technologies.join(' ')}`.toLowerCase().includes(query.toLowerCase()));
-  const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
+  const heroProjects = useMemo(() => projects.slice(0, 3), []);
+  const scrollProjects = useMemo(() => projects.slice(0, 4), []);
+  const forcedProjectIndex = scrollProjects.findIndex((project) => project.id === selected.id);
+  const selectedProjectIndex = projects.findIndex((project) => project.id === selected.id);
 
-  return <main>
-    <div className="scroll-line" aria-hidden="true" />
-    <header className="site-header">
-      <Link className="wordmark" href="#top"><span>AKT</span><span className="wordmark-role">Shopify / Frontend</span></Link>
-      <nav className="desktop-nav" aria-label="Primary navigation"><Link href="#work">Work</Link><Link href="#about">About</Link><Link href="#expertise">Expertise</Link></nav>
-      <div className="header-tools"><button className="icon-button" onClick={() => setCommand(true)} aria-label="Open command menu">⌘K</button><button className="icon-button theme-button" onClick={toggleTheme} aria-label="Toggle color theme">{theme === 'light' ? '●' : '○'}</button><Link className="header-cta" href="#contact">Let&apos;s talk ↗</Link><button className="menu-button" onClick={() => setMenu(!menu)} aria-expanded={menu} aria-label="Toggle navigation">Menu</button></div>
-    </header>
-    {menu && <nav className="mobile-menu" aria-label="Mobile navigation">{['work','about','expertise','contact'].map((item) => <Link key={item} href={`#${item}`} onClick={() => setMenu(false)}>{item}</Link>)}</nav>}
+  useEffect(() => {
+    let frame = 0;
+    const syncFeaturedStore = () => {
+      const showcase = workShowcaseRef.current;
+      if (!showcase || innerWidth <= 1100 || manualProjectRef.current) return;
+      const rect = showcase.getBoundingClientRect();
+      const travel = Math.max(showcase.offsetHeight - innerHeight, 1);
+      if (rect.top > innerHeight * .58 || rect.bottom < innerHeight * .42) return;
+      const progress = Math.min(1, Math.max(0, -rect.top / travel));
+      const index = Math.min(scrollProjects.length - 1, Math.floor(progress * scrollProjects.length));
+      setSelected((current) => current.id === scrollProjects[index].id ? current : scrollProjects[index]);
+    };
+    const onScroll = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(syncFeaturedStore);
+    };
+    syncFeaturedStore();
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(frame);
+      removeEventListener('scroll', onScroll);
+      removeEventListener('resize', onScroll);
+    };
+  }, [scrollProjects]);
 
-    <section className="hero" id="top">
-      <div className="hero-copy"><p className="eyebrow"><span className="status-dot" /> Available for thoughtful commerce work</p><h1>Commerce, shaped<br />for the <em>real world.</em></h1><p className="hero-intro">I&apos;m Akhilesh — a Shopify and frontend developer building clear, responsive storefronts where design, engineering and ecommerce meet.</p><div className="hero-actions"><Link className="button button-dark" href="#work">Explore selected work <span>↘</span></Link><Link className="text-link" href="#about">More about me →</Link></div></div>
-      <div className="hero-art" aria-label="Abstract ecommerce storefront composition"><div className="browser-shell"><div className="browser-top"><i/><i/><i/><span>storefront.preview</span></div><div className="store-nav"><b>FORM / 01</b><span>Shop&nbsp;&nbsp; Journal&nbsp;&nbsp; Cart (0)</span></div><div className="product-visual"><div className="product-copy"><small>OBJECT NO. 04</small><strong>Designed to<br/>be chosen.</strong></div><div className="product-orbit"><div className="product-core"/></div></div><div className="store-footer"><span>Custom product experience</span><b>Add to bag — ₹4,800</b></div></div><div className="code-note"><span>01 / LIQUID</span><code>{'{% section \'product-form\' %}'}</code></div><div className="system-note"><span>DESIGN SYSTEM</span><div><i/><i/><i/><i/></div><b>08:24</b></div></div>
-    </section>
+  const selectFeaturedStore = (project: (typeof projects)[number], index: number, shouldScroll = true) => {
+    setSelected(project);
+    manualProjectRef.current = index >= scrollProjects.length;
+    const showcase = workShowcaseRef.current;
+    if (!shouldScroll || !showcase || innerWidth <= 1100 || index >= scrollProjects.length) return;
+    const showcaseTop = scrollY + showcase.getBoundingClientRect().top;
+    const travel = Math.max(showcase.offsetHeight - innerHeight, 0);
+    const destination = showcaseTop + travel * (index / Math.max(scrollProjects.length - 1, 1));
+    scrollTo({ top: destination, behavior: reduceMotion ? 'auto' : 'smooth' });
+  };
+  return <main className="nx-site" id="top">
+    <AnimatePresence>{!entered && <motion.div className="nx-entrance" exit={{ y: '-100%' }} transition={{ duration: .85, ease: [0.76, 0, 0.24, 1] }}>
+      <motion.div className="nx-entrance-lockup" initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .7, ease: [0.16, 1, 0.3, 1] }}>
+        <motion.div className="nx-entrance-mark" initial={{ opacity: 0, scale: .76, rotate: -8 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} transition={{ duration: .75, ease: [0.16, 1, 0.3, 1] }}><Image src="/portrait-assets/ak-monogram-v1.png" alt="AK monogram" width={120} height={120} priority /></motion.div>
+        <div className="nx-entrance-name"><p>PORTFOLIO / LOADING</p><strong><motion.span initial={{ opacity: 0, x: -22 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: .16, duration: .58 }}>AKHILESH</motion.span><motion.span initial={{ opacity: 0, x: 22 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: .27, duration: .58 }}>KUMAR TYAGI</motion.span></strong><small>SHOPIFY · UI/UX · FULL STACK</small></div>
+      </motion.div>
+      <div className="nx-entrance-progress"><span>BUILDING THE EXPERIENCE</span><b>100%</b><motion.i initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 1.55, ease: [0.16, 1, 0.3, 1] }} /></div>
+    </motion.div>}</AnimatePresence>
+    <motion.div className="nx-progress" style={{ scaleX: progress }} /><div className="nx-cursor" aria-hidden="true" />
+    <header className="nx-nav"><a className="nx-brand" href="#top"><Image className="nx-brand-mark" src="/portrait-assets/ak-monogram-v1.png" alt="AK monogram" width={46} height={46} priority /><span><strong>AKHILESH KUMAR TYAGI</strong><small>Developer · Designer · Problem Solver</small></span></a><nav>{['Work', 'Expertise', 'Stack', 'About', 'Contact'].map(item => <a key={item} href={`#${item.toLowerCase()}`}>{item}</a>)}</nav><div className="nx-nav-right"><div className="nx-socials">{socials.map(({ label, href, Icon }) => <a key={label} href={href} target={href.startsWith('http') ? '_blank' : undefined} rel="noreferrer" aria-label={label}><Icon size={18} weight="bold" /></a>)}</div><a className="nx-talk" href="mailto:tyagiakhliesh87@gmail.com">Let&apos;s talk <ArrowUpRight size={17} /></a><button onClick={() => setMenu(true)} aria-label="Open menu"><List size={22} /></button></div></header>
+    <AnimatePresence>{menu && <motion.aside className="nx-menu" initial={{ opacity: 0, y: '-100%' }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: '-100%' }}><button onClick={() => setMenu(false)} aria-label="Close menu"><X size={26} /></button>{['work','expertise','stack','about','contact'].map(item => <a key={item} href={`#${item}`} onClick={() => setMenu(false)}>{item}</a>)}</motion.aside>}</AnimatePresence>
 
-    <section className="work-section" id="work">
-      <div className="section-heading"><p className="eyebrow">Selected work / 2025–26</p><h2>Built for products<br/><em>people choose.</em></h2><p>Real ecommerce references, presented without invented metrics or outcomes.</p></div>
-      <div className="project-tools"><div className="filters" aria-label="Project filters">{filters.map((item) => <button className={filter===item?'active':''} onClick={() => setFilter(item)} key={item}>{item}</button>)}</div><label className="search-field"><span className="sr-only">Search projects</span><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search projects"/><kbd>⌘K</kbd></label></div>
-      <div className="project-index">
-        <div className="project-preview" style={{'--preview':visible[active]?.surface ?? '#888','--accent':visible[active]?.accent ?? '#fff'} as React.CSSProperties}><div className="preview-window"><span>{visible[active]?.title ?? 'No project'}</span><div className="preview-object"/><small>Commerce / Interface / System</small></div></div>
-        <div className="project-list">{visible.length ? visible.map((project,index) => <article key={project.id} onMouseEnter={() => setActive(index)} onFocus={() => setActive(index)}><span>{String(project.order).padStart(2,'0')}</span><div><p>{project.category}</p><h3><Link href={`/work/${project.slug}`}>{project.title}</Link></h3><div className="project-tags">{project.industries.map(tag => <small key={tag}>{tag}</small>)}</div></div><div className="project-links"><Link href={`/work/${project.slug}`}>Case study →</Link><a href={project.url} target="_blank" rel="noreferrer">Live ↗</a></div></article>) : <div className="no-results"><p>No projects match that search.</p><button onClick={() => {setQuery('');setFilter('All')}}>Clear search</button></div>}</div>
+    <section className="nx-hero"><motion.div className="nx-hero-copy" initial={reduceMotion ? false : { opacity: 0, x: -34 }} animate={entered ? { opacity: 1, x: 0 } : {}} transition={{ duration: .8 }}><p className="nx-kicker">{'// SPATIAL PORTFOLIO OS'}</p><h1>I build<br />storefronts<br />with a <em>point<br />of view.</em></h1><p className="nx-intro">Shopify + UI/UX first.<br />Full-stack development that scales.</p><div className="nx-actions"><a href="#work">Explore work <ArrowUpRight size={17} /></a><a href="/resume">View résumé <ArrowUpRight size={15} /></a></div><span className="nx-availability"><i /> Available for full-time &amp; remote opportunities</span></motion.div>
+      <motion.div className="nx-portrait-stage" style={reduceMotion ? undefined : { x: heroX, y: heroY }}><Image className="nx-aperture" src="/portrait-assets/spatial-aperture-cutout-v2.png" alt="" width={1160} height={1356} priority /><Image className="nx-person" src="/portrait-assets/akhilesh-professional-cutout-v2.png" alt="Akhilesh Kumar Tyagi" width={1160} height={1356} priority /><span className="nx-orbit" aria-label={orbitLabel}>{orbitLabel.split('').map((character, index) => <i aria-hidden="true" key={`${character}-${index}`} style={{ '--orbit-angle': `${-86 + (172 * index) / (orbitLabel.length - 1)}deg` } as React.CSSProperties}>{character === ' ' ? '\u00A0' : character}</i>)}</span><div className="nx-profile-note"><b>Akhilesh Kumar Tyagi</b><span>Open to on-site, hybrid<br />and remote roles.</span><ArrowUpRight size={17} /></div></motion.div>
+      <motion.div className="nx-store-stack" initial={reduceMotion ? false : { opacity: 0, x: 70 }} animate={entered ? { opacity: 1, x: 0 } : {}} transition={{ duration: .9, delay: .18 }}><p><i /> LIVE COMMERCE WORK</p>{heroProjects.map((project, index) => <button key={project.id} className={`nx-phone nx-phone-${index}`} onClick={() => { document.querySelector('#work')?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }); window.setTimeout(() => selectFeaturedStore(project, index), reduceMotion ? 0 : 650); }} aria-label={`Preview ${project.title}`}><span>{new URL(project.url).hostname.replace('www.','')}</span><Image src={project.previewImage} alt={`${project.title} storefront`} fill sizes="260px" priority={index === 0} /></button>)}</motion.div><a className="nx-scroll" href="#work" aria-label="Scroll to work"><ArrowDown size={18} /></a></section>
+
+    <section className="nx-focus"><span>EXPERIENCE TIMELINE <i /></span><article><b>01</b><div><h2>Shopify &amp; UI/UX <small>PRIMARY FOCUS</small></h2><p>Strategy, design and development of high-converting, premium Shopify storefronts.</p></div></article><ArrowRight className="nx-focus-arrow" size={24} /><article><b>02</b><div><h2>Full Stack Development <small>SECOND FOCUS</small></h2><p>Scalable web applications with clean architecture and robust engineering.</p></div></article><article><b>03</b><div><h2>Continuous Craft</h2><p>Performance, accessibility and experience refinement.</p></div></article></section>
+    <section className="nx-tools"><span>TECH &amp; TOOLS <i /></span>{['SHOPIFY','LIQUID','TS','NEXT','REACT','NODE','GRAPHQL'].map(tool => <b key={tool}>{tool}</b>)}<p>Based in India · UTC +05:30 · Available worldwide <i /></p></section>
+
+    <section className="nx-work" id="work">
+      <motion.div className="nx-work-art" aria-hidden="true" initial={reduceMotion ? false : { opacity: 0, x: 130, scale: 1.04 }} whileInView={{ opacity: 1, x: 0, scale: 1 }} viewport={{ once: true, amount: .12 }} transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}><Image src="/portrait-assets/work-commerce-constellation-v1.png" alt="" fill sizes="70vw" /></motion.div>
+      <motion.div className="nx-work-head" initial={reduceMotion ? false : { opacity: 0, y: 34 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .22 }} transition={{ duration: .72, delay: .22, ease: [0.16, 1, 0.3, 1] }}><p className="nx-eyebrow">SELECTED COMMERCE WORK / 01—10</p><KineticHeading lines={[{ text: 'Real stores.' }, { text: 'Previewed clearly.', muted: true }]} /></motion.div>
+      <div className="nx-scroll-showcase" ref={workShowcaseRef}>
+        <div className="nx-live-layout">
+          <div className="nx-project-list">
+            <div className="nx-project-list-head"><span>STORE INDEX</span><b>ALL 10 PROJECTS</b></div>
+            {projects.map((project, index) => <motion.button initial={reduceMotion ? false : { opacity: 0, x: -16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: .15 }} transition={{ duration: .38, delay: Math.min(index * .045, .3) }} className={selected.id === project.id ? 'active' : ''} key={project.id} onClick={() => selectFeaturedStore(project, index)} aria-current={selected.id === project.id ? 'true' : undefined}><span>{String(index + 1).padStart(2,'0')}</span><div><strong>{project.title}</strong><small>{project.category}</small></div><ArrowUpRight size={17} /></motion.button>)}
+            <div className="nx-scroll-cue"><span>{forcedProjectIndex >= 0 ? `${String(forcedProjectIndex + 1).padStart(2, '0')} / 04` : `${String(selectedProjectIndex + 1).padStart(2, '0')} / 10`}</span><i><b style={{ transform: `scaleX(${forcedProjectIndex >= 0 ? (forcedProjectIndex + 1) / 4 : (selectedProjectIndex + 1) / 10})` }} /></i><small>{forcedProjectIndex >= 0 ? 'Scroll story · first four stores' : 'Manual project selected · scroll the index for more'}</small></div>
+          </div>
+          <motion.div className="nx-live-stage" key={selected.id} initial={reduceMotion ? false : { opacity: .35, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .48, ease: [0.16, 1, 0.3, 1] }}>
+            <div className="nx-browser-bar"><span /><span /><span /><b>{new URL(selected.url).hostname}</b><div className="nx-preview-tabs" role="tablist" aria-label="Store preview mode"><button className={previewMode === 'live' ? 'active' : ''} onClick={() => setPreviewMode('live')} role="tab" aria-selected={previewMode === 'live'}><MonitorPlay size={13} /> Live</button><button className={previewMode === 'image' ? 'active' : ''} onClick={() => setPreviewMode('image')} role="tab" aria-selected={previewMode === 'image'}><ImageSquare size={13} /> Fallback</button></div><a className="nx-browser-live" href={selected.url} target="_blank" rel="noreferrer"><ArrowUpRight size={14} /> Full site</a></div>
+            <div className={`nx-frame-wrap ${previewMode}`}><Image src={selected.previewImage} alt={`${selected.title} storefront fallback preview`} fill sizes="70vw" />{previewMode === 'live' ? <><iframe key={selected.id} src={selected.url} title={`${selected.title} live storefront preview`} loading="lazy" referrerPolicy="no-referrer" /><div className="nx-embed-note"><span>LIVE EMBED</span><p>If this store blocks framing, switch to Fallback or open the full site.</p></div></> : <a className="nx-live-launch" href={selected.url} target="_blank" rel="noreferrer" aria-label={`Open ${selected.title} live storefront`}><MonitorPlay size={22} /> Open live storefront</a>}</div>
+            <div className="nx-live-caption"><div><span>{previewMode === 'live' ? 'LIVE EMBED MODE' : 'RELIABLE IMAGE FALLBACK'}</span><h3>{selected.title}</h3><p>{selected.shortDescription}</p>{selected.previewNote && <small>{selected.previewNote}</small>}</div><a href={`/work/${selected.slug}`}>View case <ArrowRight size={17} /></a></div>
+            <p className="nx-frame-note">Use Live for the embedded storefront. If Shopify security blocks it, Fallback keeps a fast, recruiter-friendly visual preview available.</p>
+          </motion.div>
+        </div>
+        <div className="nx-project-scroll-track" aria-hidden="true">{scrollProjects.map(project => <span key={project.id} />)}</div>
       </div>
     </section>
 
-    <section className="statement"><p>I don&apos;t just build websites.</p><h2>I build digital commerce experiences.</h2><div className="marquee" aria-hidden="true">LIQUID · STOREFRONTS · RESPONSIVE UX · PERFORMANCE · SHOPIFY ·</div></section>
-
-    <section className="process-section"><div className="section-kicker">How I think</div><div className="process-intro"><h2>From business context<br/>to browser detail.</h2><p>A practical process for turning requirements and designs into maintainable commerce experiences.</p></div><div className="process-list">{process.map(([number,title,copy],i) => <details key={number} open={i===0}><summary><span>{number}</span><strong>{title}</strong><i>+</i></summary><p>{copy}</p></details>)}</div></section>
-
-    <section className="expertise-section" id="expertise"><div className="section-kicker">Expertise</div><div className="expertise-head"><h2>Built for the browser.<br/><em>Structured for the business.</em></h2><p>Shopify implementation, frontend engineering and the systems that keep ecommerce experiences clear and adaptable.</p></div><div className="expertise-grid">{expertise.map(([title,items],i) => <article key={title as string}><span>0{i+1}</span><h3>{title as string}</h3><ul>{(items as string[]).map(item => <li key={item}>{item}</li>)}</ul></article>)}</div></section>
-
-    <section className="about-section" id="about"><div className="about-label">About / AKT</div><div className="about-copy"><h2>Design sense.<br/>Engineering discipline.<br/><em>Commerce context.</em></h2><p>My background began in computer science and moved into the practical details of Shopify and ecommerce development. I enjoy the work that happens where design, code, business requirements and customer experience overlap.</p><p>With approximately one year of professional experience, including work in a top 1% freelance agency environment, I&apos;m focused on sharpening the craft through real storefronts and production constraints.</p><Link className="text-link" href="/resume">View résumé →</Link></div><aside><p>Education</p><article><strong>BTech, Computer Science</strong><span>SRIMT Lucknow · 2020–2023 · 78%</span></article><article><strong>Diploma, Information Technology</strong><span>Hewett Polytechnic Lucknow · 2017–2020 · 77%</span></article></aside></section>
-
-    <section className="contact-section" id="contact"><div className="contact-copy"><p className="eyebrow">Start a conversation</p><h2>Have a store that needs<br/><em>better engineering?</em></h2><p>Let&apos;s build something worth remembering.</p><a href="https://www.linkedin.com/in/akhilesh-kumar-tyagi-34286012a/" target="_blank" rel="noreferrer">LinkedIn ↗</a></div><ContactForm/></section>
-    <footer><div><strong>Akhilesh Kumar Tyagi</strong><span>Shopify Developer / Ecommerce Developer</span></div><nav><Link href="#work">Work</Link><Link href="#about">About</Link><Link href="#expertise">Expertise</Link><Link href="#contact">Contact</Link></nav><p>Designed &amp; engineered with attention to detail. © {new Date().getFullYear()}</p></footer>
-
-    <dialog ref={dialogRef} className="command-dialog" onCancel={() => setCommand(false)}><div className="command-head"><input autoFocus placeholder="Type a command or search…" value={query} onChange={(e) => setQuery(e.target.value)}/><button onClick={() => setCommand(false)}>ESC</button></div><nav>{[['Work','#work'],['About','#about'],['Expertise','#expertise'],['Contact','#contact'],['Résumé','/resume']].map(([label,href]) => <Link key={label} href={href} onClick={() => setCommand(false)}><span>Go to {label}</span><kbd>↵</kbd></Link>)}<button onClick={() => {toggleTheme();setCommand(false)}}><span>Toggle theme</span><kbd>T</kbd></button><a href="https://www.linkedin.com/in/akhilesh-kumar-tyagi-34286012a/" target="_blank" rel="noreferrer"><span>Open LinkedIn</span><kbd>↗</kbd></a></nav></dialog>
+    <section className="nx-expertise" id="expertise">
+      <div className="nx-expertise-art" aria-hidden="true"><Image src="/portrait-assets/expertise-developer-commerce-atelier-v2.png" alt="" fill sizes="60vw" /></div>
+      <motion.div className="nx-expertise-head" initial={reduceMotion ? false : { opacity: 0, y: 32 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .2 }} transition={{ duration: .72, delay: .22, ease: [0.16, 1, 0.3, 1] }}><p className="nx-eyebrow">DESIGN SYSTEM / COMMERCE THINKING</p><KineticHeading lines={[{ text: 'Shopify thinking,' }, { text: 'full-stack depth.', muted: true }]} /></motion.div>
+      <motion.div className="nx-service-grid" initial="hidden" whileInView="visible" viewport={{ once: true, amount: .2 }} variants={{ hidden: {}, visible: { transition: { delayChildren: .48, staggerChildren: .12 } } }}>
+        {[{ Icon: ShoppingBag, label: '01 / PRIMARY', title: 'Shopify + UI/UX', body: 'Store architecture, responsive product storytelling, Liquid sections, collection journeys and interaction design shaped around conversion.' }, { Icon: Code, label: '02 / SECONDARY', title: 'Full-stack engineering', body: 'React and MERN applications, API integrations and maintainable interfaces built beyond the storefront.' }, { Icon: MonitorPlay, label: '03 / QUALITY', title: 'Responsive craft', body: 'Motion, accessibility, performance and device-aware polish carried from concept through implementation.' }].map(({ Icon, label, title, body }) => <motion.article key={title} variants={{ hidden: { opacity: 0, y: 36 }, visible: { opacity: 1, y: 0, transition: { duration: .62, ease: [0.16, 1, 0.3, 1] } } }}><Icon size={28} /><span>{label}</span><h3>{title}</h3><p>{body}</p></motion.article>)}
+      </motion.div>
+    </section>
+    <section className="nx-stack" id="stack"><Image className="nx-stack-art" src="/portrait-assets/enchanted-tech-observatory-v2.png" alt="A symmetrical dark glass technology observatory with luminous orbital rings and crystalline artifacts" fill sizes="100vw" /><div className="nx-stack-shade" /><div className="nx-stack-head"><Reveal><p className="nx-eyebrow">THE ENCHANTED TECHNOLOGY ARCHIVE / 01—10</p><KineticHeading lines={[{ text: 'Tools, in orbit.' }, { text: 'Built for real work.', muted: true }]} /><p>Each technology has a precise role in the system—from interface craft and Shopify architecture to APIs, data and dependable delivery.</p></Reveal></div><div className="nx-stack-grid">{techStack.map(({ name, role, Icon }, index) => <motion.article key={name} initial={reduceMotion ? false : { opacity: 0, y: 26, rotate: index % 2 ? 1 : -1 }} whileInView={{ opacity: 1, y: 0, rotate: 0 }} viewport={{ once: true, amount: .35 }} transition={{ duration: .55, delay: Math.min(index * .055, .4), ease: [0.16, 1, 0.3, 1] }} style={{ animationDelay: `${index * -.73}s` }}><span>{String(index + 1).padStart(2, '0')}</span><Icon aria-hidden="true" /><div><strong>{name}</strong><small>{role}</small></div></motion.article>)}</div></section>
+    <section className="nx-about" id="about" ref={aboutRef}><motion.div className="nx-about-art" aria-hidden="true" initial={reduceMotion ? false : { opacity: 0, x: 120, clipPath: 'inset(0 0 0 100%)' }} animate={reduceMotion || aboutInView ? { opacity: .46, x: 0, clipPath: 'inset(0 0 0 0%)' } : { opacity: 0, x: 120, clipPath: 'inset(0 0 0 100%)' }} transition={{ duration: 1.05, ease: [0.16, 1, 0.3, 1] }}><Image src="/portrait-assets/about-design-bridge-v1.png" alt="" fill sizes="65vw" /></motion.div><motion.div className="nx-photo" initial={reduceMotion ? false : { opacity: 0, y: 34 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .18 }} transition={{ duration: .72, delay: .2, ease: [0.16, 1, 0.3, 1] }}><Image src="/portrait-assets/akhilesh-editorial.jpg" alt="Akhilesh Kumar Tyagi" fill sizes="45vw" /></motion.div><motion.div className="nx-about-copy" initial={reduceMotion ? false : { opacity: 0, y: 38 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .15 }} transition={{ duration: .78, delay: .34, ease: [0.16, 1, 0.3, 1] }}><p className="nx-eyebrow">ABOUT / LUCKNOW, INDIA</p><KineticHeading lines={[{ text: 'Design instinct.' }, { text: 'Developer discipline.' }]} /><p>I’m a Web Developer at Digital Heroes with a commerce-first focus. My background moves through Java, Android, MERN and modern frontend engineering, giving me the range to think about the entire product, not only the surface.</p><div className="nx-timeline"><article><span>2025—NOW</span><i /><div><h3>Web Developer · Digital Heroes</h3><p>Shopify development, responsive web design, GraphQL and API work.</p></div></article><article><span>2025</span><i /><div><h3>Web Development Intern</h3><p>Hanumant Technology Pvt. Ltd. · MERN stack development.</p></div></article><article><span>2020—2023</span><i /><div><h3>B.Tech · Computer Science</h3><p>SR Group of Institute Management and Technology · 78%.</p></div></article><article><span>2017—2020</span><i /><div><h3>Diploma · Information Technology</h3><p>Hewett Polytechnic Lucknow · 77%.</p></div></article></div></motion.div></section>
+    <section className="nx-contact" id="contact"><div><p className="nx-eyebrow">AVAILABLE FOR THE RIGHT TEAM</p><KineticHeading lines={[{ text: 'Let’s build the store' }, { text: 'people remember.', muted: true }]} /></div><div className="nx-contact-links"><a href="mailto:tyagiakhliesh87@gmail.com"><span><EnvelopeSimple size={20} /> tyagiakhliesh87@gmail.com</span><ArrowUpRight size={20} /></a><a href="tel:+918795943121"><span><PhoneCall size={20} /> +91 87959 43121</span><ArrowUpRight size={20} /></a><a href="https://wa.me/918795943121" target="_blank" rel="noreferrer"><span><WhatsappLogo size={20} /> WhatsApp</span><ArrowUpRight size={20} /></a><a href="https://www.linkedin.com/in/akhilesh-kumar-tyagi-34286012a/" target="_blank" rel="noreferrer"><span><LinkedinLogo size={20} /> LinkedIn</span><ArrowUpRight size={20} /></a><a href="https://github.com/tyagiakhilesh87" target="_blank" rel="noreferrer"><span><GithubLogo size={20} /> GitHub</span><ArrowUpRight size={20} /></a></div></section>
+    <footer className="nx-footer"><div className="nx-footer-logo"><Image src="/portrait-assets/ak-monogram-v1.png" alt="AK monogram" width={140} height={140} /></div><div className="nx-footer-identity"><strong>AKHILESH<br />KUMAR TYAGI</strong><span>Shopify · UI/UX · Full Stack</span><p>Built for thoughtful teams<br />and ambitious commerce.</p></div><div className="nx-footer-nav"><a href="#work">Selected work</a><a href="#expertise">Expertise</a><a href="#stack">Tech stack</a><a href="#about">About</a><a href="#contact">Contact</a></div><div className="nx-footer-meta"><address>Greater Lucknow Uttar Pradesh East,<br />India - 226021</address><span>© {new Date().getFullYear()} · Available worldwide</span><a href="#top">Back to top <ArrowUpRight size={14} /></a></div></footer>
   </main>;
 }
 
-function ContactForm() {
-  const [state,setState] = useState<'idle'|'loading'|'success'|'error'>('idle');
-  async function submit(event:FormEvent<HTMLFormElement>) {
-    event.preventDefault(); setState('loading');
-    const form = new FormData(event.currentTarget);
-    try { const response = await fetch('/api/contact',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(Object.fromEntries(form))}); if(!response.ok) throw new Error(); setState('success'); event.currentTarget.reset(); } catch { setState('error'); }
-  }
-  if(state==='success') return <div className="form-message" role="status"><span>Message received</span><h3>Thanks for reaching out.</h3><p>I&apos;ll review the project details and get back to you.</p><button onClick={() => setState('idle')}>Send another message</button></div>;
-  return <form className="contact-form" onSubmit={submit}><div className="form-row"><label>Name<input name="name" required minLength={2}/></label><label>Email<input name="email" type="email" required/></label></div><div className="form-row"><label>Project type<select name="projectType" required defaultValue=""><option value="" disabled>Select one</option><option>Shopify storefront</option><option>Theme development</option><option>Frontend implementation</option><option>Other</option></select></label><label>Budget range<select name="budget" required defaultValue=""><option value="" disabled>Select range</option><option>Exploring</option><option>₹25k–₹75k</option><option>₹75k–₹2L</option><option>₹2L+</option></select></label></div><label>Project details<textarea name="message" required minLength={20} rows={4}/></label><button className="button button-light" disabled={state==='loading'}>{state==='loading'?'Sending…':'Send inquiry →'}</button>{state==='error'&&<p className="error-message" role="alert">Something went wrong. Please try again or reach out on LinkedIn.</p>}</form>;
+function Reveal({ children }: { children: React.ReactNode }) { const reduce = useReducedMotion(); return <motion.div initial={reduce ? false : { opacity: 0, y: 38 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .2 }} transition={{ duration: .75, ease: [0.16, 1, 0.3, 1] }}>{children}</motion.div>; }
+
+function KineticHeading({ lines }: { lines: Array<{ text: string; muted?: boolean }> }) {
+  const reduce = useReducedMotion();
+  const headingVariants = { hidden: {}, visible: { transition: { staggerChildren: .1 } } };
+  const lineVariants = { hidden: {}, visible: { transition: { staggerChildren: .07 } } };
+  const wordVariants = {
+    hidden: { opacity: 0, y: '110%', rotate: 2 },
+    visible: { opacity: 1, y: 0, rotate: 0, transition: { duration: .62, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } },
+  };
+
+  return <motion.h2 className="nx-kinetic-heading" aria-label={lines.map((line) => line.text).join(' ')} initial={reduce ? false : 'hidden'} whileInView={reduce ? undefined : 'visible'} viewport={{ once: true, amount: .2 }} variants={headingVariants}>{lines.map((line) => <motion.span className={`nx-kinetic-line${line.muted ? ' muted' : ''}`} variants={lineVariants} key={line.text}>{line.text.split(' ').map((word, wordIndex) => <motion.span aria-hidden="true" variants={wordVariants} key={`${word}-${wordIndex}`}>{word}&nbsp;</motion.span>)}</motion.span>)}</motion.h2>;
 }

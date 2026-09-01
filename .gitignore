@@ -36,3 +36,12 @@ next-env.d.ts
 /.wrangler/
 /outputs/
 /work/
+
+# local preview and design QA artifacts
+/.tunnel/
+/.codex-*.log
+/.server-*.log
+/audit/
+/design-qa.md
+/qa-*.png
+/qa-*.jpg
