@@ -3,9 +3,9 @@
 
   # Akhilesh Kumar Tyagi
 
-  ### Shopify & Ecommerce Developer · UI/UX · Full-Stack Engineering
+  ### Shopify Developer · Liquid · UI/UX · Full-Stack Engineering
 
-  I build distinctive, responsive storefronts where strong commerce architecture meets thoughtful interaction design.
+  I build distinctive Shopify storefronts where conversion-focused commerce architecture meets thoughtful UI/UX and dependable frontend engineering.
 
   [![Portfolio](https://img.shields.io/badge/PORTFOLIO-IN_DEVELOPMENT-98ed1b?style=for-the-badge&labelColor=11110f)](#run-locally)
   [![LinkedIn](https://img.shields.io/badge/LINKEDIN-CONNECT-ffffff?style=for-the-badge&logo=linkedin&logoColor=11110f&labelColor=11110f)](https://www.linkedin.com/in/akhilesh-kumar-tyagi-34286012a/)
@@ -64,6 +64,19 @@ The full portfolio includes ten projects across jewelry, fragrance, gaming, pets
 - **Original visual direction** combining editorial portraiture, spatial commerce artwork, and an acid-lime design language.
 - **Deployment-ready structure** prepared for Vercel today and a Supabase-backed content workflow later.
 
+## Shopify-focused development
+
+My primary focus is building and improving Shopify storefronts that feel intentional from the first interaction through checkout. I combine commerce thinking with frontend craft so the final experience supports both the customer journey and the team maintaining it.
+
+- Shopify theme development and responsive storefront implementation
+- Liquid sections, reusable blocks and merchant-friendly customization
+- Product, collection and navigation experiences shaped around conversion
+- Storefront performance, accessibility and device-aware quality
+- GraphQL and API integrations for connected commerce workflows
+- Figma-to-code implementation with close attention to spacing, typography, hierarchy and interaction states
+
+> **Design to development:** I use Figma to understand the system behind a screen, then translate it into reusable, responsive components rather than treating the design as a static picture.
+
 ## Technology
 
 <p>
@@ -75,11 +88,15 @@ The full portfolio includes ten projects across jewelry, fragrance, gaming, pets
   <img src="https://img.shields.io/badge/Cloudflare-11110f?style=flat-square&logo=cloudflare&logoColor=F38020" alt="Cloudflare" />
   <img src="https://img.shields.io/badge/Drizzle_ORM-11110f?style=flat-square&logo=drizzle&logoColor=C5F74F" alt="Drizzle ORM" />
   <img src="https://img.shields.io/badge/Shopify-11110f?style=flat-square&logo=shopify&logoColor=95BF47" alt="Shopify" />
+  <img src="https://img.shields.io/badge/Liquid-11110f?style=flat-square&logo=shopify&logoColor=98ed1b" alt="Shopify Liquid" />
+  <img src="https://img.shields.io/badge/Figma-11110f?style=flat-square&logo=figma&logoColor=F24E1E" alt="Figma" />
 </p>
 
 | Layer | Implementation |
 | --- | --- |
 | Interface | Next.js, React, TypeScript |
+| Shopify | Liquid, theme sections, storefront UX, GraphQL and API integration |
+| Design workflow | Figma, responsive translation, reusable components and interaction states |
 | Motion | Motion for React, scroll progress, staged reveals |
 | Visual system | Responsive CSS, Geist Sans, Geist Mono, Phosphor icons |
 | Content | Typed local project collection, prepared for future Supabase integration |
@@ -137,10 +154,9 @@ No online database is required for the current portfolio. Supabase can be connec
 
 ## Contact
 
-**Akhilesh Kumar Tyagi**  
-Greater Lucknow, Uttar Pradesh East, India — 226021
+**Akhilesh Kumar Tyagi**
 
-[LinkedIn](https://www.linkedin.com/in/akhilesh-kumar-tyagi-34286012a/) · [GitHub](https://github.com/TyagiAkhilesh87) · [Email](mailto:tyagiakhliesh87@gmail.com) · [WhatsApp](https://wa.me/918795943121)
+[LinkedIn](https://www.linkedin.com/in/akhilesh-kumar-tyagi-34286012a/) · [GitHub](https://github.com/TyagiAkhilesh87) · [Email](mailto:tyagiakhliesh87@gmail.com)
 
 ---
 
