@@ -62,7 +62,7 @@ The full portfolio includes ten projects across jewelry, fragrance, gaming, pets
 - **Dedicated case-study routes** with consistent navigation back to the main portfolio.
 - **Responsive motion system** built with reduced-motion support and deliberate section entrances.
 - **Original visual direction** combining editorial portraiture, spatial commerce artwork, and an acid-lime design language.
-- **Deployment-ready structure** prepared for Vercel today and a Supabase-backed content workflow later.
+- **Deployment-ready structure** built for Vercel today and a Supabase-backed content workflow later.
 
 ## Shopify-focused development
 
@@ -84,9 +84,7 @@ My primary focus is building and improving Shopify storefronts that feel intenti
   <img src="https://img.shields.io/badge/React_19-11110f?style=flat-square&logo=react&logoColor=61DAFB" alt="React" />
   <img src="https://img.shields.io/badge/TypeScript-11110f?style=flat-square&logo=typescript&logoColor=3178C6" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Motion-11110f?style=flat-square&logo=framer&logoColor=98ed1b" alt="Motion" />
-  <img src="https://img.shields.io/badge/Vite_8-11110f?style=flat-square&logo=vite&logoColor=FFD62E" alt="Vite" />
-  <img src="https://img.shields.io/badge/Cloudflare-11110f?style=flat-square&logo=cloudflare&logoColor=F38020" alt="Cloudflare" />
-  <img src="https://img.shields.io/badge/Drizzle_ORM-11110f?style=flat-square&logo=drizzle&logoColor=C5F74F" alt="Drizzle ORM" />
+  <img src="https://img.shields.io/badge/Vercel-11110f?style=flat-square&logo=vercel&logoColor=white" alt="Vercel" />
   <img src="https://img.shields.io/badge/Shopify-11110f?style=flat-square&logo=shopify&logoColor=95BF47" alt="Shopify" />
   <img src="https://img.shields.io/badge/Liquid-11110f?style=flat-square&logo=shopify&logoColor=98ed1b" alt="Shopify Liquid" />
   <img src="https://img.shields.io/badge/Figma-11110f?style=flat-square&logo=figma&logoColor=F24E1E" alt="Figma" />
@@ -100,9 +98,8 @@ My primary focus is building and improving Shopify storefronts that feel intenti
 | Motion | Motion for React, scroll progress, staged reveals |
 | Visual system | Responsive CSS, Geist Sans, Geist Mono, Phosphor icons |
 | Content | Typed local project collection, prepared for future Supabase integration |
-| Data layer | Drizzle ORM foundation |
-| Build | Vinext and Vite |
-| Deployment | Vercel-ready; Cloudflare tooling also included |
+| Build | Next.js production pipeline |
+| Deployment | Vercel-ready with environment variables kept outside source control |
 
 ## Project structure
 
@@ -111,8 +108,7 @@ app/
 ├── page.tsx                 # Main portfolio
 ├── portfolio-v4.css         # Visual and responsive system
 ├── work/[slug]/page.tsx     # Dynamic commerce case studies
-├── resume/page.tsx          # Recruiter-friendly résumé
-└── admin/page.tsx           # Content-management foundation
+└── resume/page.tsx          # Recruiter-friendly résumé
 
 components/
 ├── PortfolioExperience.tsx  # Main interactive experience

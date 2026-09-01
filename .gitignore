@@ -39,8 +39,7 @@ next-env.d.ts
 
 # local preview and design QA artifacts
 /.tunnel/
-/.codex-*.log
-/.server-*.log
+/*.log
 /audit/
 /design-qa.md
 /qa-*.png
